@@ -4,6 +4,7 @@
 #include "pch.h"
 #include <iostream>
 #include "global.h"
+
 using namespace std;
 #define filePath   "pixie.exe"
 int main()
@@ -32,6 +33,8 @@ int main()
 	ushort NumberOfSections = getShortFromBuff(buff, TOPE + 6);//NumberOfSections
 	ushort SizeOfOptionalHeader = getShortFromBuff(buff, TOPE + 20); //SizeOfOptionalHeader
 			//可选pe头 TOPE+24~ 32位一般e0个字节
+	uint SectionAlignment = getIntFromBuff(buff, TOPE + 24 + 0x20);
+	uint FileAlignment = getIntFromBuff(buff, TOPE + 24 + 0x24);
 	uint AddressOfEntryPoint = getIntFromBuff(buff, TOPE + 40);//AddressOfEntryPoint
 	uint ImageBase = getIntFromBuff(buff, TOPE + 52);//ImageBase
 	uint SizeOfImage = getIntFromBuff(buff, 0x38 + TOPE + 24);
@@ -46,7 +49,7 @@ int main()
 	cout << "AddressOfEntryPoint: " << hex << AddressOfEntryPoint << endl;
 	cout << "ImageBase: " << hex << ImageBase << endl;
 	cout << "SizeOfImage: " << dec << SizeOfImage << "  " << hex << SizeOfImage << endl;
-	
+	cout << "SectionAlignment" << hex << SectionAlignment << endl;
 	
 	
 	uchar *imageBuff = new uchar[SizeOfImage];
@@ -59,13 +62,16 @@ int main()
 
 	std::cout << "Hello World!"<<endl;
 
+	uchar  codebuff[] = { 0x6a,0x00,0x6a,0x00, 0x6a,0x00, 0x6a,0x00,
+		0xE8,0x00,0x00 ,0x00 ,0x00 ,0xE9,0x00,0x00,0x00,0x00
+	};
 
-
-	uchar *fileBuff = new uchar[len];
-	memset(fileBuff, 0, len);
-	ImageToFileBuff(imageBuff, fileBuff);
+	uchar *fileBuff = new uchar[len+ FileAlignment];
+	memset(fileBuff, 0, len+ FileAlignment);
+	//ImageToFileBuff(imageBuff, fileBuff);
+	writeBitCodeToFileBuff_addSection(codebuff, sizeof(codebuff), buff, fileBuff);
 	FILE *fff = fopen("notepad2.exe", "wb");
-	int res3 = fwrite(fileBuff, len, 1, ff);
+	int res3 = fwrite(fileBuff, len+ FileAlignment, 1, ff);
 	fclose(fff);
 	
 
