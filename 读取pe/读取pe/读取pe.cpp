@@ -4,7 +4,7 @@
 #include "pch.h"
 #include <iostream>
 #include "global.h"
-
+#include <windows.h>
 using namespace std;
 #define filePath   "pixie.exe"
 int main()
@@ -38,8 +38,16 @@ int main()
 	uint AddressOfEntryPoint = getIntFromBuff(buff, TOPE + 40);//AddressOfEntryPoint
 	uint ImageBase = getIntFromBuff(buff, TOPE + 52);//ImageBase
 	uint SizeOfImage = getIntFromBuff(buff, 0x38 + TOPE + 24);
+	uint NumberOfRvaAndSizes = getIntFromBuff(buff, 0x5c + TOPE + 24);
 
+	uint exportTableAddr =  getIntFromBuff(buff, 0x60 + TOPE + 24);
+	uint exportTableSize = getIntFromBuff(buff, 0x64 + TOPE + 24);
+	for (int i = 0;i< exportTableSize;i++)
+	{
 
+	}
+	//_IMAGE_EXPORT_DIRECTORY
+	
 	cout << "MZ: " << hex << MZ << endl;
 	cout << "TOPE: " << hex << TOPE << endl;
 	cout << "PEchar: " << hex << PEchar << endl;
@@ -50,29 +58,33 @@ int main()
 	cout << "ImageBase: " << hex << ImageBase << endl;
 	cout << "SizeOfImage: " << dec << SizeOfImage << "  " << hex << SizeOfImage << endl;
 	cout << "SectionAlignment" << hex << SectionAlignment << endl;
+	cout << "NumberOfRvaAndSizes" << hex << NumberOfRvaAndSizes << endl;
 	
-	
-	uchar *imageBuff = new uchar[SizeOfImage];
-	memset(imageBuff, 0, SizeOfImage);
-	FileToImageBuff(buff,imageBuff);
-	FILE *ff = fopen("notepad1.exe", "wb");
-	int res2 = fwrite(imageBuff, SizeOfImage, 1, ff);
-	fclose(ff);
 
 
-	std::cout << "Hello World!"<<endl;
 
-	uchar  codebuff[] = { 0x6a,0x00,0x6a,0x00, 0x6a,0x00, 0x6a,0x00,
-		0xE8,0x00,0x00 ,0x00 ,0x00 ,0xE9,0x00,0x00,0x00,0x00
-	};
+	//
+	//uchar *imageBuff = new uchar[SizeOfImage];
+	//memset(imageBuff, 0, SizeOfImage);
+	//FileToImageBuff(buff,imageBuff);
+	//FILE *ff = fopen("notepad1.exe", "wb");
+	//int res2 = fwrite(imageBuff, SizeOfImage, 1, ff);
+	//fclose(ff);
 
-	uchar *fileBuff = new uchar[len+ FileAlignment];
-	memset(fileBuff, 0, len+ FileAlignment);
-	//ImageToFileBuff(imageBuff, fileBuff);
-	writeBitCodeToFileBuff_addSection(codebuff, sizeof(codebuff), buff, fileBuff);
-	FILE *fff = fopen("notepad2.exe", "wb");
-	int res3 = fwrite(fileBuff, len+ FileAlignment, 1, ff);
-	fclose(fff);
+
+	//std::cout << "Hello World!"<<endl;
+
+	//uchar  codebuff[] = { 0x6a,0x00,0x6a,0x00, 0x6a,0x00, 0x6a,0x00,
+	//	0xE8,0x00,0x00 ,0x00 ,0x00 ,0xE9,0x00,0x00,0x00,0x00
+	//};
+
+	//uchar *fileBuff = new uchar[len+ FileAlignment];
+	//memset(fileBuff, 0, len+ FileAlignment);
+	////ImageToFileBuff(imageBuff, fileBuff);
+	//writeBitCodeToFileBuff_addSection(codebuff, sizeof(codebuff), buff, fileBuff);
+	//FILE *fff = fopen("notepad2.exe", "wb");
+	//int res3 = fwrite(fileBuff, len+ FileAlignment, 1, ff);
+	//fclose(fff);
 	
 
 
