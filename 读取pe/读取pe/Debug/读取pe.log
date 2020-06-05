@@ -1,2 +1,3 @@
-﻿  global.cpp
-  读取pe.vcxproj -> E:\cppWorkSpace\读取pe\Debug\读取pe.exe
+﻿  PEFile.cpp
+d:\cppworkspace\cppworkspace\读取pe\读取pe\pefile.cpp(36): warning C4244: “=”: 从“std::streamoff”转换到“long”，可能丢失数据
+  读取pe.vcxproj -> D:\cppworkspace\cppworkspace\读取pe\Debug\读取pe.exe

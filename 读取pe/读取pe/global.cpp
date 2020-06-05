@@ -2,6 +2,55 @@
 #include "global.h"
 #include <iostream>
 using namespace std;
+BData::BData():_data(NULL),_len(0){
+}
+BData::BData(uchar * data,long len) {
+	setData(data, len);
+}
+BData::~BData(){
+	if (_data != NULL) {
+		delete[] _data;
+	}
+}
+int BData::setData(uchar * data, long len) {
+	if (_data != NULL) {
+		delete[] _data;
+		_data = NULL;
+		_len = 0;
+	}
+	_data = new uchar[len];
+	_len = len;
+
+
+	if (_data == NULL) {
+		_len = 0;
+		return 0;
+	}
+	for (int i = 0; i < len; i++) {
+		_data[i] =data[i];
+	}
+	return 1;
+}
+
+uchar * BData::getDataByBuff(uchar * data, long len)
+{
+	int suc = setData(data, len);
+	if (suc) {
+		return getData();
+	}
+	else {
+		return NULL;
+	}
+}
+
+void setBuffData(uchar *dst, uchar *src, uint dstbegin, uint srcbegin, uint len) {
+	printf("setBuffData dstbegin:%x\n", dstbegin);
+	for (uint i = 0; i < len; i++)
+	{
+		dst[dstbegin + i] = src[srcbegin + i];
+	}
+}
+
 struct IMAGE_SECTION_HEADER__ {
 	uchar    Name[8];
 	union {
@@ -188,13 +237,7 @@ uint writeBitCodeToFileBuff_addSection(uchar * code, uint codesize, uchar * file
 	return 1;
 	
 }
-void setBuffData(uchar *dst, uchar *src, uint dstbegin,uint srcbegin,uint len){
-	printf("setBuffData dstbegin:%x\n", dstbegin);
-	for (uint i = 0;i<len;i++)
-	{
-		dst[dstbegin + i] = src[srcbegin + i];
-	}
-}
+
 uint FileToImageBuff(uchar *fileBuff,uchar *imageBuff ) {
 	
 	uint TOPE = getIntFromBuff(fileBuff, 60);	//tope
